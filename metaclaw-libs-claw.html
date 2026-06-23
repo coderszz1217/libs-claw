@@ -1,0 +1,1150 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>运动营养 AI 超级蓝海洞察师 | Libs·Claw</title>
+  <meta name="description" content="Libs·Claw 运动营养 AI 超级蓝海洞察师，帮助品牌实时发现蓝海赛道、监控竞品动态、洞察消费者痛点、守住渠道利润。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f6f1e9;
+      --paper-2: #fbf8f3;
+      --ink: #151515;
+      --ink-soft: #4f4a43;
+      --ink-muted: #867e74;
+      --gold: #b68b55;
+      --gold-soft: #d8bb97;
+      --wine: #6e3142;
+      --wine-soft: #8d5967;
+      --forest: #2d544a;
+      --line: rgba(21, 21, 21, 0.08);
+      --card: rgba(255, 255, 255, 0.68);
+      --shadow: 0 24px 80px rgba(53, 39, 24, 0.10);
+      --radius: 28px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Noto Sans SC", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(182, 139, 85, 0.14), transparent 32%),
+        radial-gradient(circle at 85% 20%, rgba(110, 49, 66, 0.08), transparent 24%),
+        linear-gradient(180deg, #fdfaf5 0%, #f6f1e9 52%, #f3ede4 100%);
+      line-height: 1.8;
+      letter-spacing: 0.01em;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(21, 21, 21, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(21, 21, 21, 0.02) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,0.45), transparent 85%);
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(1180px, calc(100vw - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(16px);
+      background: rgba(251, 248, 243, 0.82);
+      border-bottom: 1px solid rgba(21, 21, 21, 0.06);
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 76px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      font: 600 22px "Cormorant Garamond", serif;
+      color: #fff7ee;
+      background: linear-gradient(135deg, var(--wine), var(--gold));
+      box-shadow: 0 16px 30px rgba(110, 49, 66, 0.22);
+    }
+
+    .brand-copy strong {
+      display: block;
+      font: 600 1.05rem "Noto Serif SC", serif;
+      letter-spacing: 0.04em;
+    }
+
+    .brand-copy span {
+      display: block;
+      font-size: 0.76rem;
+      color: var(--ink-muted);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      display: flex;
+      gap: 18px;
+      font-size: 0.92rem;
+      color: var(--ink-soft);
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav a:hover { color: var(--wine); }
+
+    .hero {
+      position: relative;
+      padding: 110px 0 70px;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 34px;
+      align-items: stretch;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: var(--gold);
+      font-size: 0.78rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-family: "Noto Serif SC", serif;
+      font-size: clamp(2.9rem, 6vw, 5.3rem);
+      line-height: 1.12;
+      letter-spacing: 0.03em;
+      max-width: 10.5em;
+    }
+
+    .hero h1 em {
+      font-family: "Cormorant Garamond", serif;
+      font-style: italic;
+      color: var(--wine);
+      font-weight: 500;
+    }
+
+    .hero-lead {
+      margin-top: 22px;
+      font-size: 1.08rem;
+      color: var(--ink-soft);
+      max-width: 38rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 32px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 54px;
+      padding: 0 24px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 0.96rem;
+      font-weight: 700;
+      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      color: #fff8ee;
+      background: linear-gradient(135deg, var(--wine), #8f5263 45%, var(--gold));
+      box-shadow: 0 18px 40px rgba(110, 49, 66, 0.22);
+    }
+
+    .btn-secondary {
+      border-color: rgba(21, 21, 21, 0.10);
+      background: rgba(255, 255, 255, 0.5);
+      color: var(--ink);
+    }
+
+    .hero-note {
+      margin-top: 18px;
+      color: var(--ink-muted);
+      font-size: 0.92rem;
+    }
+
+    .hero-panel,
+    .card,
+    .panel {
+      border: 1px solid rgba(21, 21, 21, 0.08);
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+    }
+
+    .hero-panel {
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(182, 139, 85, 0.18), transparent 32%),
+        radial-gradient(circle at 100% 100%, rgba(110, 49, 66, 0.12), transparent 30%);
+      pointer-events: none;
+    }
+
+    .panel-label {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .panel-label::before {
+      content: "";
+      width: 28px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    .director-card {
+      position: relative;
+      z-index: 1;
+      margin-top: 20px;
+      padding: 22px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(21, 21, 21, 0.06);
+    }
+
+    .director-card h3 {
+      font-family: "Noto Serif SC", serif;
+      font-size: 1.55rem;
+      line-height: 1.35;
+    }
+
+    .director-card p {
+      margin-top: 12px;
+      color: var(--ink-soft);
+      font-size: 0.96rem;
+    }
+
+    .signal-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .signal {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(249, 245, 238, 0.95);
+      border: 1px solid rgba(21, 21, 21, 0.05);
+    }
+
+    .signal strong {
+      display: block;
+      font: 600 1.4rem "Cormorant Garamond", serif;
+      color: var(--wine);
+    }
+
+    .signal span {
+      display: block;
+      margin-top: 6px;
+      color: var(--ink-soft);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    .hero-microcopy {
+      position: relative;
+      z-index: 1;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(21, 21, 21, 0.08);
+      color: var(--ink-soft);
+      font-size: 0.95rem;
+    }
+
+    section {
+      padding: 82px 0;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr);
+      gap: 24px;
+      margin-bottom: 38px;
+      align-items: start;
+    }
+
+    .section-no {
+      font: 400 clamp(3.3rem, 7vw, 6rem) "Cormorant Garamond", serif;
+      color: rgba(182, 139, 85, 0.42);
+      line-height: 1;
+    }
+
+    .section-head h2 {
+      font-family: "Noto Serif SC", serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.24;
+      margin-bottom: 12px;
+    }
+
+    .section-head p {
+      max-width: 760px;
+      color: var(--ink-soft);
+      font-size: 1.02rem;
+    }
+
+    .pain-grid,
+    .scene-grid,
+    .deploy-grid,
+    .tech-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .pain-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card {
+      padding: 28px;
+    }
+
+    .card h3,
+    .panel h3 {
+      font-family: "Noto Serif SC", serif;
+      font-size: 1.45rem;
+      margin-bottom: 12px;
+      line-height: 1.35;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(110, 49, 66, 0.08);
+      color: var(--wine);
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+    }
+
+    .card p,
+    .panel p,
+    .list li,
+    .table td,
+    .table th {
+      color: var(--ink-soft);
+    }
+
+    .quote {
+      margin-top: 18px;
+      padding-left: 16px;
+      border-left: 2px solid var(--gold);
+      color: var(--ink);
+      font-family: "Noto Serif SC", serif;
+      font-size: 1.02rem;
+    }
+
+    .now-next {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .mini-box {
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.55);
+      border: 1px solid rgba(21,21,21,0.06);
+    }
+
+    .mini-box strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--ink);
+      font-size: 0.98rem;
+    }
+
+    .equation {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 72px minmax(0, 1fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .equation-center {
+      display: grid;
+      place-items: center;
+      font: 500 2.8rem "Cormorant Garamond", serif;
+      color: var(--gold);
+    }
+
+    .comparison {
+      margin-top: 26px;
+      overflow: auto;
+      border-radius: 24px;
+      border: 1px solid rgba(21, 21, 21, 0.08);
+      background: rgba(255,255,255,0.55);
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+    }
+
+    .table th,
+    .table td {
+      padding: 18px 20px;
+      border-bottom: 1px solid rgba(21, 21, 21, 0.07);
+      vertical-align: top;
+      text-align: left;
+      font-size: 0.94rem;
+      line-height: 1.7;
+    }
+
+    .table th {
+      background: rgba(182, 139, 85, 0.08);
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .delta {
+      color: var(--forest);
+      font-weight: 700;
+    }
+
+    .layers {
+      display: grid;
+      gap: 16px;
+    }
+
+    .layer {
+      display: grid;
+      grid-template-columns: 160px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+      padding: 24px 26px;
+    }
+
+    .layer-index {
+      font-family: "Cormorant Garamond", serif;
+      color: var(--gold);
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .layer h3 { margin-bottom: 6px; }
+
+    .list {
+      margin-top: 14px;
+      padding-left: 18px;
+    }
+
+    .list li { margin: 8px 0; }
+
+    .scene-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .deploy-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tech-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .metric {
+      padding: 22px;
+      text-align: center;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.54);
+      border: 1px solid rgba(21,21,21,0.07);
+    }
+
+    .metric strong {
+      display: block;
+      font: 600 2rem "Cormorant Garamond", serif;
+      color: var(--wine);
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 6px;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+    }
+
+    .faq {
+      display: grid;
+      gap: 14px;
+    }
+
+    details {
+      padding: 20px 22px;
+      border-radius: 22px;
+      border: 1px solid rgba(21,21,21,0.08);
+      background: rgba(255,255,255,0.56);
+    }
+
+    summary {
+      list-style: none;
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    details p {
+      margin-top: 12px;
+      color: var(--ink-soft);
+    }
+
+    .cta {
+      padding: 90px 0 100px;
+    }
+
+    .cta-shell {
+      padding: 42px;
+      background:
+        radial-gradient(circle at top left, rgba(182, 139, 85, 0.22), transparent 28%),
+        radial-gradient(circle at 90% 20%, rgba(110, 49, 66, 0.18), transparent 24%),
+        linear-gradient(135deg, rgba(255,255,255,0.72), rgba(248,243,236,0.82));
+    }
+
+    .checklist {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 18px;
+      margin: 24px 0 28px;
+    }
+
+    .check {
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.62);
+      border: 1px solid rgba(21,21,21,0.06);
+      color: var(--ink-soft);
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .step {
+      padding: 20px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.54);
+      border: 1px solid rgba(21,21,21,0.07);
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--wine);
+    }
+
+    footer {
+      padding: 28px 0 46px;
+      color: var(--ink-muted);
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 1080px) {
+      .hero-grid,
+      .pain-grid,
+      .scene-grid,
+      .deploy-grid,
+      .tech-grid,
+      .metric-strip,
+      .steps,
+      .equation {
+        grid-template-columns: 1fr;
+      }
+
+      .equation-center { min-height: 44px; }
+      .layer,
+      .section-head { grid-template-columns: 1fr; }
+      .checklist,
+      .now-next { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .topbar-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px 0;
+      }
+
+      .nav {
+        gap: 12px;
+        font-size: 0.88rem;
+      }
+
+      .hero { padding-top: 72px; }
+      .hero-panel,
+      .card,
+      .panel,
+      .cta-shell { padding: 22px; }
+      .container { width: min(100vw - 20px, 1180px); }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="#top">
+        <div class="brand-mark">M</div>
+        <div class="brand-copy">
+          <strong>Libs·Claw</strong>
+          <span>AI Blue Ocean Director</span>
+        </div>
+      </a>
+      <nav class="nav">
+        <a href="#pain">伤口</a>
+        <a href="#system">四层闭环</a>
+        <a href="#scenes">工作场景</a>
+        <a href="#tech">技术底座</a>
+        <a href="#deploy">部署方式</a>
+        <a href="#cta">立即启动</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">Libs·Claw For Sports Nutrition</span>
+          <h1>你不是缺数据。<br>你是缺一个 <em>7×24</em> 小时在线的<br>市场情报总监。</h1>
+          <p class="hero-lead">
+            运动营养 AI 超级蓝海洞察师，不只是帮你做调研，而是替你持续发现蓝海赛道、拆解竞品动作、监听消费者抱怨、守住渠道利润，让品牌从“靠经验下注”变成“靠情报先手布局”。
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#cta">确认场景，开始部署</a>
+            <a class="btn btn-secondary" href="#system">先看四层闭环</a>
+          </div>
+          <p class="hero-note">适合运动营养、功能食品、保健品牌、新赛道业务团队与多品牌集团。</p>
+        </div>
+
+        <aside class="hero-panel">
+          <span class="panel-label">Live Intelligence</span>
+          <div class="director-card">
+            <h3>AI 超级蓝海洞察师</h3>
+            <p>不睡觉、不摸鱼、越用越懂你的市场。每天自动给出趋势异动、竞品预警、消费者痛点和渠道利润信号。</p>
+          </div>
+          <div class="signal-grid">
+            <div class="signal">
+              <strong>3-6 月</strong>
+              <span>提前锁定蓝海窗口，而不是等行业报告出来。</span>
+            </div>
+            <div class="signal">
+              <strong>7 天内</strong>
+              <span>竞品新品自动预警，动作拆解直达策略层。</span>
+            </div>
+            <div class="signal">
+              <strong>日报级</strong>
+              <span>消费者抱怨、需求和灵感从季度调研切到每日监听。</span>
+            </div>
+            <div class="signal">
+              <strong>24h 预警</strong>
+              <span>渠道乱价和窜货不再等投诉出现才知道。</span>
+            </div>
+          </div>
+          <p class="hero-microcopy">
+            你不是在买一个工具。你是在给品牌请来一位会持续汇报、持续记忆、持续变聪明的市场合伙人。
+          </p>
+        </aside>
+      </div>
+    </section>
+
+    <section id="pain">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-no">01</div>
+          <div>
+            <h2>三个正在流血的伤口</h2>
+            <p>问题从来不是信息不存在，而是信息散、慢、碎，没人能 7×24 小时把它们连成判断、预警和行动。</p>
+          </div>
+        </div>
+
+        <div class="pain-grid">
+          <article class="card">
+            <span class="tag">伤口一</span>
+            <h3>蓝海就在眼前，你却看不见</h3>
+            <p>电竞营养、女性增肌、银发运动、认知支持都在增长，但团队还在主航道里打价格战。问题不是没有机会，而是没人替你持续扫描市场、听消费者、识别低供给高需求的窗口。</p>
+            <div class="now-next">
+              <div class="mini-box">
+                <strong>你现在的状态</strong>
+                <p>靠行业经验和会议讨论赌方向，等别人验证后再跟。</p>
+              </div>
+              <div class="mini-box">
+                <strong>你本该有的状态</strong>
+                <p>用 AI 情报网提前 3-6 个月锁定蓝海，先卡位再教育市场。</p>
+              </div>
+            </div>
+            <p class="quote">你不是没有机会，你只是没有“看见机会的眼睛”。</p>
+          </article>
+
+          <article class="card">
+            <span class="tag">伤口二</span>
+            <h3>竞品动了，你知道得太晚</h3>
+            <p>竞品上了新品、调了成分、改了价格、切了新人群，你两周后才知道。窗口期一过，再聪明的应对也只是补救。</p>
+            <div class="now-next">
+              <div class="mini-box">
+                <strong>你现在的状态</strong>
+                <p>靠朋友圈、展会和经销商口风“听说”竞品变化。</p>
+              </div>
+              <div class="mini-box">
+                <strong>你本该有的状态</strong>
+                <p>竞品新品 7 天内自动预警，成分、定价、渠道、内容策略同步拆解。</p>
+              </div>
+            </div>
+            <p class="quote">信息就是权力，速度决定你是应对者还是先手者。</p>
+          </article>
+
+          <article class="card">
+            <span class="tag">伤口三</span>
+            <h3>消费者天天在说，你却后知后觉</h3>
+            <p>“难喝”“没效果”“成分看不懂”“为什么不出便携装”每天都在社媒和评论区爆发，但团队刷不过来，刷完也很难沉淀成决策。</p>
+            <div class="now-next">
+              <div class="mini-box">
+                <strong>你现在的状态</strong>
+                <p>依赖季度调研和焦点小组，慢且样本有限。</p>
+              </div>
+              <div class="mini-box">
+                <strong>你本该有的状态</strong>
+                <p>用 AI 全网监听实时抓取消费者真实痛点，每天都有需求日报。</p>
+              </div>
+            </div>
+            <p class="quote">最大的产品灵感，不在会议室，在消费者的抱怨里。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="equation">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-no">02</div>
+          <div>
+            <h2>一个改变游戏规则的等式</h2>
+            <p>过去你养的是信息员，现在你请的是蓝海情报总监。区别不在于“多了个调研工具”，而在于品牌多了一位全天候市场合伙人。</p>
+          </div>
+        </div>
+
+        <div class="equation">
+          <article class="card">
+            <span class="tag">以前</span>
+            <h3>传统调研 / 人工协作</h3>
+            <ul class="list">
+              <li>你催它动，被动响应</li>
+              <li>信息散落在 Excel、PPT 和聊天记录里</li>
+              <li>只记当前项目，历史洞察不成体系</li>
+              <li>适合季度调研和年度复盘，不适合实时竞争</li>
+            </ul>
+          </article>
+
+          <div class="equation-center">→</div>
+
+          <article class="card">
+            <span class="tag">现在</span>
+            <h3>AI 超级蓝海洞察师</h3>
+            <ul class="list">
+              <li>主动扫描、自动预警、实时推送</li>
+              <li>输出可执行洞察、应对策略和风险提示</li>
+              <li>记住全部历史趋势、竞品档案和市场反馈</li>
+              <li>替代市场调研与竞争情报 80% 的重复性工作</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="comparison">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>指标</th>
+                <th>Before</th>
+                <th>After</th>
+                <th>变化</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>发现小众高增长机会的速度</td>
+                <td>3-6 个月，靠行业报告和展会消息</td>
+                <td>实时自动标记高增长低供给赛道</td>
+                <td class="delta">提前 3-6 个月卡位</td>
+              </tr>
+              <tr>
+                <td>竞品动态掌握延迟</td>
+                <td>2-4 周，往往事后才知道</td>
+                <td>7 天内自动预警 + 拆解策略</td>
+                <td class="delta">从滞后变成先手</td>
+              </tr>
+              <tr>
+                <td>消费者痛点洞察周期</td>
+                <td>季度调研</td>
+                <td>每日日报</td>
+                <td class="delta">从季度切到每日</td>
+              </tr>
+              <tr>
+                <td>渠道窜货 / 乱价响应</td>
+                <td>投诉后处理</td>
+                <td>提前 24h 预警</td>
+                <td class="delta">从救火变成防火</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="system">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-no">03</div>
+          <div>
+            <h2>四层闭环：从追风口，到造风口</h2>
+            <p>这不是单点工具，而是一套覆盖市场情报全链路的操作系统。它从机会识别开始，到策略制定、风险预判、利润守护，形成闭环。</p>
+          </div>
+        </div>
+
+        <div class="layers">
+          <article class="panel layer">
+            <div class="layer-index">第一层</div>
+            <div>
+              <h3>找风口：趋势洞察与机会识别</h3>
+              <p>市场还没热，AI 已经从社媒声量、搜索指数、电商评论和供应密度里标记出蓝海窗口。</p>
+              <ul class="list">
+                <li>社媒舆情 24h 抓取，自动生成需求日报</li>
+                <li>自动识别“讨论量周增高、供给方稀少”的赛道</li>
+                <li>在行业报告之前先捕捉趋势拐点</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="panel layer">
+            <div class="layer-index">第二层</div>
+            <div>
+              <h3>定策略：竞品情报与差异化定位</h3>
+              <p>对手一动，你不止知道发生了什么，还知道该怎么打。</p>
+              <ul class="list">
+                <li>竞品新品 7 天预警，自动推送成分、定价、渠道、内容和人群策略</li>
+                <li>深度拆解对手动作背后的意图和打法</li>
+                <li>自动生成差异化建议，让你错位竞争而不是硬碰硬</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="panel layer">
+            <div class="layer-index">第三层</div>
+            <div>
+              <h3>排地雷：市场验证与风险预判</h3>
+              <p>不是赌运气进新赛道，而是进场前先算清楚法规、容量、门槛和宣称边界。</p>
+              <ul class="list">
+                <li>中、美、欧、澳新等市场法规限制秒级预检</li>
+                <li>市场容量、竞争密度、增速和进入门槛同步测算</li>
+                <li>功效宣称绿灯、黄灯、红灯预警</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="panel layer">
+            <div class="layer-index">第四层</div>
+            <div>
+              <h3>锁战果：渠道监控与利润守护</h3>
+              <p>红利吃到了，还要守得住。利润不是靠盯人，而是靠系统盯。</p>
+              <ul class="list">
+                <li>全渠道价格 7×24h 监控，异常实时预警</li>
+                <li>窜货提前 24h 预警，从投诉后处理变成事前防守</li>
+                <li>利润健康度看板，提前看见促销对毛利的边际影响</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="scenes">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-no">04</div>
+          <div>
+            <h2>六个真实工作场景，它已经在替你干活了</h2>
+            <p>它不是一个只能回答问题的机器人，而是一位有节奏、有交付、有记忆的市场团队成员。</p>
+          </div>
+        </div>
+
+        <div class="scene-grid">
+          <article class="card">
+            <span class="tag">场景一</span>
+            <h3>每天早上 9 点，情报简报自动送达</h3>
+            <p>趋势异动、竞品动态、消费者新痛点、渠道异常被压缩进 3 分钟可读简报，战略和执行在同一个页面上对齐。</p>
+          </article>
+          <article class="card">
+            <span class="tag">场景二</span>
+            <h3>比竞品早 3 个月发现下一条蓝海赛道</h3>
+            <p>AI 从社媒声量、电商评论和搜索行为里自动标记高增长低供给赛道，提前卡位，而不是事后跟风。</p>
+          </article>
+          <article class="card">
+            <span class="tag">场景三</span>
+            <h3>竞品推新品，7 天内收到预警与应对策略</h3>
+            <p>从“知道对手做了什么”升级到“知道他为什么这么做，以及你该如何错位反击”。</p>
+          </article>
+          <article class="card">
+            <span class="tag">场景四</span>
+            <h3>消费者在想什么，你比他们自己还清楚</h3>
+            <p>每天扫描全网评论，实时更新痛点词云、情绪走向和功能偏好，让研发和内容团队有可依赖的灵感来源。</p>
+          </article>
+          <article class="card">
+            <span class="tag">场景五</span>
+            <h3>新赛道能不能进，先算一笔账</h3>
+            <p>AI 预检合规边界、测算市场容量、评估进入门槛，进场前先排坑，而不是进去之后才发现踩雷。</p>
+          </article>
+          <article class="card">
+            <span class="tag">场景六</span>
+            <h3>渠道乱价，AI 比你先知道</h3>
+            <p>从“经销商打电话投诉”切到“系统提前 24 小时预警”，守住价格体系，也守住利润和关系。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="tech">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-no">05</div>
+          <div>
+            <h2>技术底座：为什么它能当情报总监，而不只是工具</h2>
+            <p>真正有价值的，不只是一个模型，而是模型之上的任务引擎、记忆系统、知识编排和多平台协作能力。</p>
+          </div>
+        </div>
+
+        <div class="tech-grid">
+          <article class="card">
+            <h3>多平台接入</h3>
+            <p>飞书、钉钉、企微、微信统一接入。老板看简报，产品听消费者，销售盯渠道，团队在熟悉的协作入口里接收情报。</p>
+          </article>
+          <article class="card">
+            <h3>Agent 任务引擎</h3>
+            <p>你只需要说“监控电竞营养赛道机会”，它就能自动完成扫描、分析、归纳和报告交付，不需要你盯流程。</p>
+          </article>
+          <article class="card">
+            <h3>分布式记忆</h3>
+            <p>第 10 次调研时，AI 记得前 9 次的市场反馈、竞品变化和判断脉络，洞察会越用越准，而不是每次从零开始。</p>
+          </article>
+          <article class="card">
+            <h3>知识库 + Skill</h3>
+            <p>把金牌市场分析师的研判逻辑沉淀为 Skill，把少数人的眼光变成整个团队都可复用的标准动作。</p>
+          </article>
+          <article class="card">
+            <h3>子代理并行</h3>
+            <p>同时监控 10 个竞品、扫描 5 个平台、追踪 3 个新赛道，不需要人力排队，也不会因为任务太多而漏看。</p>
+          </article>
+          <article class="card">
+            <h3>Skill 编排引擎</h3>
+            <p>134+ 行业 Skill 像乐高一样自由组合，让蓝海扫描、竞品监控、用户监听和风险预警形成完整工作流。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="deploy">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-no">06</div>
+          <div>
+            <h2>两种部署：怎么选，才更适合你现在的阶段</h2>
+            <p>第一次引入 AI，建议先从一个最小场景验证价值；当你需要更深的集成和更高的数据隔离，再切到私有化。</p>
+          </div>
+        </div>
+
+        <div class="deploy-grid">
+          <article class="card">
+            <span class="tag">云端 SaaS</span>
+            <h3>3-7 天快速验证</h3>
+            <ul class="list">
+              <li>适合单一品牌、想快速验证价值的团队</li>
+              <li>标准化市场洞察 Skill 包，启动轻、见效快</li>
+              <li>官方托管，适合竞品监控、消费者痛点洞察等单场景试点</li>
+            </ul>
+          </article>
+          <article class="card">
+            <span class="tag">私有化部署</span>
+            <h3>4-6 周深度定制</h3>
+            <ul class="list">
+              <li>适合多品牌集团和数据敏感场景</li>
+              <li>可按品牌需求定制 Skill、流程和数据结构</li>
+              <li>数据保存在你的服务器或本地环境中，商业数据更可控</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="metric-strip">
+          <div class="metric">
+            <strong>80%</strong>
+            <span>重复性市场情报工作可被替代</span>
+          </div>
+          <div class="metric">
+            <strong>3×</strong>
+            <span>新人分析师借助 AI 上手更快</span>
+          </div>
+          <div class="metric">
+            <strong>7×24</strong>
+            <span>渠道、竞品、趋势持续在线监控</span>
+          </div>
+          <div class="metric">
+            <strong>24h</strong>
+            <span>渠道异常从事后处理变成提前预警</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-no">07</div>
+          <div>
+            <h2>你可能在担心的问题</h2>
+            <p>真正成熟的引入方式，不是神化 AI，而是让它接手重复工作，把人的判断力释放出来。</p>
+          </div>
+        </div>
+
+        <div class="faq">
+          <details open>
+            <summary>AI 会替代市场分析师吗？</summary>
+            <p>不会。它替代的是信息收集、数据整理、报告撰写、渠道监控这类重复性工作。真正需要人的战略判断、创意策划和关键沟通，反而会因为 AI 的加入变得更高效。</p>
+          </details>
+          <details>
+            <summary>团队会不会抵触？</summary>
+            <p>通常相反。最枯燥也最耗时的“刷平台、整理档案、写周报”会先被接走，分析师更容易把时间用在研判和策略上，新人也能借助 AI 更快达到成熟输出。</p>
+          </details>
+          <details>
+            <summary>数据来源可靠吗？</summary>
+            <p>系统可接入主流社媒、电商平台和行业数据库，关键数据会标注来源，方便追溯和复核，避免“结论有了但出处不清”。</p>
+          </details>
+          <details>
+            <summary>数据安全吗？</summary>
+            <p>云端版本支持多租户隔离和加密传输；私有化部署则可以让数据停留在你的服务器上。核心商业数据敏感度较高的团队，更适合私有化方案。</p>
+          </details>
+          <details>
+            <summary>历史数据需要重新录入吗？</summary>
+            <p>不需要。支持通过 Excel、ERP 和现有资料做迁移与导入，历史数据不会被浪费，反而会成为 AI 建立品牌语境和洞察记忆的重要资产。</p>
+          </details>
+          <details>
+            <summary>效果不好怎么办？</summary>
+            <p>建议先从一个最小场景 POC 验证，比如竞品监控或消费者痛点洞察。投入可控，结果可量化，验证有效后再扩展到更大范围。</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta" id="cta">
+      <div class="container">
+        <div class="panel cta-shell">
+          <span class="eyebrow">Next Step</span>
+          <h2 style="font-family: 'Noto Serif SC', serif; font-size: clamp(2.2rem, 5vw, 3.5rem); line-height: 1.22; max-width: 12em;">
+            你不是在买一个调研工具。你是在请一位 7×24 小时在线、越用越懂市场的情报总监。
+          </h2>
+          <p class="hero-lead" style="margin-top: 16px; max-width: 46rem;">
+            如果你符合下面任意一条，就已经到了该行动的时候：总觉得有机会但看不见、竞品动了才知道、消费者需求只能靠猜、渠道利润经常被偷、想试 AI 却不知道从哪开始。
+          </p>
+
+          <div class="checklist">
+            <div class="check">总觉得有机会但看不见，靠经验赌方向</div>
+            <div class="check">竞品动了才知道，应对总是慢半拍</div>
+            <div class="check">消费者在想什么，还在靠季度调研猜</div>
+            <div class="check">渠道窜货、定价冲突频发，利润被偷走</div>
+            <div class="check">想尝试 AI，但不知道从哪个业务场景开始</div>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <strong>1. 确认场景</strong>
+              <p>先选一个最想解决的痛点，比如竞品监控、消费者痛点洞察或渠道利润预警。</p>
+            </div>
+            <div class="step">
+              <strong>2. 确认部署</strong>
+              <p>云端 SaaS 适合快速验证，私有化适合深度定制和高数据敏感度场景。</p>
+            </div>
+            <div class="step">
+              <strong>3. 确认平台</strong>
+              <p>飞书、钉钉、企微、微信任选其一，部署完成后直接在群里 @AI 开始工作。</p>
+            </div>
+          </div>
+
+          <div class="hero-actions" style="margin-top: 28px;">
+            <a class="btn btn-primary" href="mailto:hello@metaclaw.ai?subject=运动营养AI蓝海洞察师咨询">立即发起 POC</a>
+            <a class="btn btn-secondary" href="#top">返回顶部</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      运动营养 AI 超级蓝海洞察师 · 基于 Libs·Claw 技术底座
+    </div>
+  </footer>
+</body>
+</html>

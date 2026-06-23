@@ -1,0 +1,1335 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Libs·Claw Neural Command Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-0: #050914;
+  --bg-1: #08101f;
+  --bg-2: #0a1529;
+  --panel: rgba(7, 14, 28, 0.92);
+  --panel-2: rgba(9, 19, 36, 0.95);
+  --panel-3: rgba(10, 24, 44, 0.92);
+  --line: rgba(76, 140, 255, 0.18);
+  --line-strong: rgba(76, 140, 255, 0.36);
+  --text: #edf6ff;
+  --muted: #7f94b7;
+  --blue: #2bb8ff;
+  --cyan: #36f3ff;
+  --green: #3df0ae;
+  --yellow: #ffbf47;
+  --orange: #ff8d3c;
+  --pink: #c05cff;
+  --red: #ff5577;
+  --shadow: 0 0 0 1px rgba(76, 140, 255, 0.10), 0 24px 60px rgba(0, 0, 0, 0.40);
+}
+
+html, body {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(43, 184, 255, 0.16), transparent 26%),
+    radial-gradient(circle at 82% 12%, rgba(192, 92, 255, 0.12), transparent 18%),
+    radial-gradient(circle at 50% 100%, rgba(61, 240, 174, 0.08), transparent 24%),
+    linear-gradient(180deg, #030711 0%, #060d19 42%, #040814 100%);
+  color: var(--text);
+  font-family: "Inter", sans-serif;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(43, 184, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(43, 184, 255, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.7), transparent 80%);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.015) 0,
+    rgba(255, 255, 255, 0.015) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  opacity: 0.25;
+}
+
+.app-shell {
+  width: min(1600px, calc(100vw - 20px));
+  margin: 10px auto;
+  border: 1px solid rgba(76, 140, 255, 0.14);
+  border-radius: 24px;
+  overflow: hidden;
+  background: rgba(3, 8, 18, 0.74);
+  backdrop-filter: blur(22px);
+  box-shadow: 0 0 0 1px rgba(43, 184, 255, 0.06), 0 30px 80px rgba(0, 0, 0, 0.42);
+}
+
+.topbar {
+  height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 0 20px;
+  border-bottom: 1px solid rgba(76, 140, 255, 0.12);
+  background: linear-gradient(180deg, rgba(9, 18, 35, 0.94), rgba(6, 12, 23, 0.86));
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 250px;
+}
+
+.brand-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.14), transparent 26%),
+    linear-gradient(135deg, rgba(22, 41, 81, 0.98), rgba(122, 42, 255, 0.82));
+  box-shadow: 0 0 20px rgba(93, 112, 255, 0.26);
+  font-family: "Rajdhani", sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.brand-copy h1 {
+  font-family: "Rajdhani", sans-serif;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--cyan);
+}
+
+.brand-copy p {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+.nav {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+}
+
+.nav a {
+  color: #cad7ef;
+  text-decoration: none;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.nav a.active {
+  color: #fff;
+  background: linear-gradient(180deg, rgba(25, 47, 94, 0.9), rgba(14, 27, 55, 0.9));
+  box-shadow: inset 0 -2px 0 var(--blue), 0 0 18px rgba(43, 184, 255, 0.16);
+}
+
+.topbar-side {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search {
+  width: 300px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(76, 140, 255, 0.14);
+  background: rgba(8, 16, 30, 0.88);
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.status-dot {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 12px rgba(255, 85, 119, 0.42);
+}
+
+.status-dot::after {
+  content: "8";
+  position: absolute;
+  top: -8px;
+  right: -9px;
+  width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  font-family: "JetBrains Mono", monospace;
+  border-radius: 50%;
+  color: white;
+  background: var(--red);
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 244px minmax(0, 1fr) 306px;
+  gap: 12px;
+  padding: 12px;
+}
+
+.panel {
+  background: linear-gradient(180deg, rgba(8, 16, 31, 0.98), rgba(5, 11, 23, 0.96));
+  border: 1px solid rgba(76, 140, 255, 0.14);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(43, 184, 255, 0.04), transparent 20%);
+}
+
+.sidebar {
+  display: grid;
+  gap: 10px;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  font-family: "Rajdhani", sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.tiny-btn {
+  color: var(--blue);
+  font-size: 30px;
+  line-height: 0.8;
+}
+
+.panel-body {
+  padding: 16px;
+}
+
+.connection-list {
+  display: grid;
+  gap: 8px;
+}
+
+.connection-item {
+  display: grid;
+  grid-template-columns: 20px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background: rgba(8, 18, 35, 0.72);
+}
+
+.connection-item.active {
+  background: linear-gradient(180deg, rgba(18, 52, 104, 0.70), rgba(11, 29, 58, 0.62));
+  border-color: rgba(43, 184, 255, 0.24);
+  box-shadow: 0 0 16px rgba(43, 184, 255, 0.10);
+}
+
+.connection-icon {
+  font-size: 16px;
+  color: #dbe8ff;
+}
+
+.connection-item span:last-child {
+  color: #b9c9e4;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+}
+
+.connection-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 10px rgba(61, 240, 174, 0.6);
+}
+
+.stacked-stats {
+  display: grid;
+  gap: 10px;
+}
+
+.gauge-box,
+.network-box,
+.identity-box {
+  padding: 16px;
+}
+
+.gauge-wrap {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.gauge {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at center, #071120 42%, transparent 43%),
+    conic-gradient(var(--green) 0 310deg, rgba(255,255,255,0.08) 310deg 360deg);
+  box-shadow: inset 0 0 0 10px rgba(255, 255, 255, 0.04), 0 0 24px rgba(61, 240, 174, 0.08);
+}
+
+.gauge-inner {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #081221;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.gauge-inner strong {
+  display: block;
+  font-size: 20px;
+  font-family: "Rajdhani", sans-serif;
+}
+
+.gauge-inner span {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.mini-wave {
+  height: 52px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(43, 184, 255, 0.06), rgba(43, 184, 255, 0.01));
+  position: relative;
+  overflow: hidden;
+}
+
+.mini-wave svg {
+  width: 100%;
+  height: 100%;
+}
+
+.dual-metric {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.metric-card {
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(10, 21, 41, 0.8);
+  border: 1px solid rgba(76, 140, 255, 0.10);
+}
+
+.metric-card strong {
+  display: block;
+  font-size: 14px;
+  color: white;
+}
+
+.metric-card span {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.identity-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #445cff, #2bb8ff);
+  display: grid;
+  place-items: center;
+  font-family: "Rajdhani", sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.identity-copy strong {
+  display: block;
+}
+
+.identity-copy span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.main {
+  display: grid;
+  gap: 12px;
+}
+
+.overview {
+  padding: 16px;
+}
+
+.metric-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.overview-card {
+  min-height: 88px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(76, 140, 255, 0.14);
+  background: linear-gradient(180deg, rgba(10, 20, 38, 0.95), rgba(8, 16, 30, 0.78));
+  position: relative;
+  overflow: hidden;
+}
+
+.overview-card::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--blue), transparent);
+}
+
+.overview-card strong {
+  display: block;
+  font-family: "Rajdhani", sans-serif;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.overview-card span {
+  display: block;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.overview-card small {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 28px;
+  opacity: 0.8;
+}
+
+.topology {
+  padding: 16px;
+}
+
+.topology-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.head-tools {
+  display: flex;
+  gap: 8px;
+}
+
+.head-tool {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid rgba(76, 140, 255, 0.16);
+  display: grid;
+  place-items: center;
+  color: #d8e7ff;
+  font-size: 14px;
+  background: rgba(10, 20, 38, 0.76);
+}
+
+.topology-stage {
+  min-height: 460px;
+  border-radius: 16px;
+  border: 1px solid rgba(76, 140, 255, 0.12);
+  background:
+    radial-gradient(circle at center, rgba(43, 184, 255, 0.10), transparent 20%),
+    linear-gradient(180deg, rgba(8, 18, 34, 0.98), rgba(7, 15, 28, 0.92));
+  position: relative;
+  overflow: hidden;
+}
+
+.center-core {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  width: 126px;
+  height: 126px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, rgba(43, 184, 255, 0.30), transparent 44%),
+    radial-gradient(circle at center, rgba(5, 17, 30, 0.96) 42%, rgba(8, 20, 35, 0.98) 60%);
+  box-shadow:
+    0 0 0 1px rgba(43, 184, 255, 0.20),
+    0 0 0 10px rgba(43, 184, 255, 0.06),
+    0 0 36px rgba(43, 184, 255, 0.30);
+  display: grid;
+  place-items: center;
+}
+
+.center-core::before,
+.center-core::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(43, 184, 255, 0.22);
+}
+
+.center-core::before {
+  inset: -18px;
+}
+
+.center-core::after {
+  inset: -34px;
+  border-style: dashed;
+}
+
+.core-cube {
+  font-size: 40px;
+  color: #8ad8ff;
+  text-shadow: 0 0 20px rgba(43, 184, 255, 0.4);
+}
+
+.node-card {
+  position: absolute;
+  width: 250px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(76, 140, 255, 0.18);
+  background: rgba(10, 20, 38, 0.84);
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.24);
+  z-index: 2;
+}
+
+.node-card h4 {
+  font-size: 15px;
+  margin-bottom: 6px;
+  line-height: 1.25;
+}
+
+.node-card p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.node-card small {
+  display: inline-flex;
+  margin-top: 10px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  border: 1px solid currentColor;
+}
+
+.node-card.blue small { color: var(--cyan); }
+.node-card.green small { color: var(--green); }
+.node-card.yellow small { color: var(--yellow); }
+.node-card.purple small { color: var(--pink); }
+.node-card.orange small { color: var(--orange); }
+
+.connector {
+  position: absolute;
+  border-top: 2px dashed rgba(67, 195, 255, 0.58);
+  transform-origin: left center;
+  filter: drop-shadow(0 0 6px rgba(43, 184, 255, 0.22));
+  z-index: 1;
+}
+
+.connector::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 10px rgba(54, 243, 255, 0.62);
+}
+
+.charts {
+  padding: 16px;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.chart-card {
+  padding: 14px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(10, 20, 38, 0.96), rgba(8, 16, 28, 0.82));
+  border: 1px solid rgba(76, 140, 255, 0.12);
+}
+
+.chart-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.chart-card strong {
+  display: block;
+  font-family: "Rajdhani", sans-serif;
+  font-size: 16px;
+}
+
+.chart-card span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.chart-value {
+  font-family: "Rajdhani", sans-serif;
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.chart-svg {
+  height: 110px;
+}
+
+.chart-svg svg {
+  width: 100%;
+  height: 100%;
+}
+
+.console {
+  padding: 16px;
+}
+
+.console-tabs {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 14px;
+  font-size: 14px;
+}
+
+.console-tabs span.active {
+  color: var(--blue);
+  border-bottom: 2px solid var(--blue);
+  padding-bottom: 6px;
+}
+
+.console-body {
+  display: grid;
+  grid-template-columns: 1.1fr 0.8fr;
+  gap: 12px;
+}
+
+.console-form,
+.console-feed {
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(76, 140, 255, 0.12);
+  background: rgba(9, 18, 34, 0.82);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr) 88px;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.select-box,
+.text-box,
+.action-button,
+.feed-chip {
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(76, 140, 255, 0.14);
+  display: flex;
+  align-items: center;
+  background: rgba(6, 13, 24, 0.78);
+  color: #dae8ff;
+  font-size: 13px;
+}
+
+.action-button {
+  justify-content: center;
+  color: white;
+  background: linear-gradient(180deg, rgba(31, 123, 255, 0.92), rgba(13, 88, 225, 0.92));
+  box-shadow: 0 0 18px rgba(31, 123, 255, 0.24);
+}
+
+.command-box {
+  height: 54px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(76, 140, 255, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(6, 12, 22, 0.88);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 14px;
+}
+
+.send-row {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.send-actions {
+  display: flex;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.send-btn {
+  min-width: 110px;
+  height: 46px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, rgba(27, 121, 255, 0.92), rgba(13, 88, 225, 0.92));
+  color: white;
+  font-weight: 600;
+}
+
+.feed-toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.feed-chip.active {
+  color: white;
+  border-color: rgba(43, 184, 255, 0.28);
+  box-shadow: inset 0 -2px 0 var(--blue);
+}
+
+.data-rain {
+  min-height: 150px;
+  border-radius: 10px;
+  border: 1px solid rgba(76, 140, 255, 0.10);
+  background: rgba(5, 10, 18, 0.88);
+  padding: 12px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.blue { color: var(--blue); }
+.cyan { color: var(--cyan); }
+.green { color: var(--green); }
+.yellow { color: var(--yellow); }
+.pink { color: var(--pink); }
+.orange { color: var(--orange); }
+.red { color: var(--red); }
+
+.sidebar-right {
+  display: grid;
+  gap: 10px;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.quick-item {
+  padding: 12px 8px;
+  border-radius: 14px;
+  border: 1px solid rgba(76, 140, 255, 0.14);
+  background: rgba(10, 20, 38, 0.82);
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.quick-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  border: 1px solid rgba(76, 140, 255, 0.20);
+}
+
+.quick-item span {
+  font-size: 12px;
+  color: #dbe8ff;
+}
+
+.log-list {
+  display: grid;
+  gap: 10px;
+}
+
+.log-row {
+  display: grid;
+  grid-template-columns: 68px 52px 1fr;
+  gap: 10px;
+  align-items: start;
+  font-size: 12px;
+}
+
+.log-row time {
+  font-family: "JetBrains Mono", monospace;
+  color: var(--muted);
+}
+
+.tag {
+  font-family: "JetBrains Mono", monospace;
+}
+
+.automation-list {
+  display: grid;
+  gap: 10px;
+}
+
+.automation-item {
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(76, 140, 255, 0.12);
+  background: rgba(10, 20, 38, 0.82);
+  display: grid;
+  grid-template-columns: 42px 1fr 44px;
+  gap: 10px;
+  align-items: center;
+}
+
+.automation-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(20, 35, 62, 0.96);
+  border: 1px solid rgba(76, 140, 255, 0.18);
+  font-size: 20px;
+}
+
+.automation-copy strong {
+  display: block;
+  font-size: 13px;
+}
+
+.automation-copy span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.toggle {
+  width: 42px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.10);
+  position: relative;
+}
+
+.toggle::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+  background: #a7bddc;
+}
+
+.toggle.on {
+  background: rgba(61, 240, 174, 0.22);
+  box-shadow: 0 0 16px rgba(61, 240, 174, 0.12);
+}
+
+.toggle.on::after {
+  left: 23px;
+  background: var(--green);
+}
+
+.footer-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px 14px;
+  color: var(--muted);
+  font-size: 12px;
+  font-family: "JetBrains Mono", monospace;
+}
+
+@media (max-width: 1400px) {
+  .workspace {
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+
+  .sidebar-right {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .topology-stage {
+    min-height: 560px;
+  }
+}
+
+@media (max-width: 1150px) {
+  .workspace,
+  .console-body,
+  .chart-grid,
+  .metric-row,
+  .sidebar-right,
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .search {
+    width: 220px;
+  }
+
+  .topology-stage {
+    min-height: auto;
+    display: grid;
+    gap: 12px;
+    padding: 20px;
+  }
+
+  .center-core,
+  .connector,
+  .node-card {
+    position: static;
+    width: auto;
+    transform: none;
+    inset: auto;
+  }
+}
+
+@media (max-width: 860px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    height: auto;
+    padding: 14px;
+    flex-wrap: wrap;
+  }
+
+  .topbar-side {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+</style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">M</div>
+        <div class="brand-copy">
+          <h1>Libs·Claw Pro</h1>
+          <p>女性运动营养蓝海情报与选题控制平台</p>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="#" class="active">控制台</a>
+        <a href="#">设备管理</a>
+        <a href="#">协议中心</a>
+        <a href="#">数据监控</a>
+        <a href="#">自动化</a>
+        <a href="#">脚本中心</a>
+        <a href="#">可视化大屏</a>
+        <a href="#">设置</a>
+      </nav>
+      <div class="topbar-side">
+        <div class="search">⌕ 搜索赛道 / 品牌 / 日志 / 选题</div>
+        <div class="status-dot"></div>
+      </div>
+    </header>
+
+    <div class="workspace">
+      <aside class="sidebar">
+        <section class="panel">
+          <div class="panel-body">
+            <div class="panel-title">
+              <span>连接中心</span>
+              <span class="tiny-btn">＋</span>
+            </div>
+            <div class="connection-list">
+              <div class="connection-item active"><span class="connection-icon">▦</span><span>全部连接</span><span>18</span></div>
+              <div class="connection-item"><span class="connection-icon">⌘</span><span>核心结论</span><span><span class="connection-dot"></span></span></div>
+              <div class="connection-item"><span class="connection-icon">◎</span><span>商品机会地图</span><span>4</span></div>
+              <div class="connection-item"><span class="connection-icon">◌</span><span>用户需求洞察</span><span>3</span></div>
+              <div class="connection-item"><span class="connection-icon">◈</span><span>内容大盘</span><span>2</span></div>
+              <div class="connection-item"><span class="connection-icon">⌬</span><span>电商验证</span><span>3</span></div>
+              <div class="connection-item"><span class="connection-icon">✦</span><span>趋势预判</span><span>2</span></div>
+              <div class="connection-item"><span class="connection-icon">⌁</span><span>标题公式库</span><span>1</span></div>
+              <div class="connection-item"><span class="connection-icon">↯</span><span>行动建议</span><span>2</span></div>
+              <div class="connection-item"><span class="connection-icon">◍</span><span>实验队列</span><span>0</span></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="stacked-stats">
+          <section class="panel gauge-box">
+            <div class="panel-title"><span>系统状态</span><span>⎇</span></div>
+            <div class="gauge-wrap">
+              <div class="gauge">
+                <div class="gauge-inner">
+                  <div>
+                    <strong>86%</strong>
+                    <span>窗口热度</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="mini-wave">
+                  <svg viewBox="0 0 160 52" preserveAspectRatio="none">
+                    <polyline fill="none" stroke="#2bb8ff" stroke-width="2" points="0,34 12,30 24,28 36,32 48,20 60,24 72,16 84,14 96,18 108,12 120,20 132,16 144,18 160,10"/>
+                  </svg>
+                </div>
+                <div class="dual-metric">
+                  <div class="metric-card"><strong>42%</strong><span>内容稀缺率</span></div>
+                  <div class="metric-card"><strong>28°C</strong><span>竞品温度</span></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel network-box">
+            <div class="panel-title"><span>网络状态</span><span>⇄</span></div>
+            <div class="dual-metric" style="margin-top:0">
+              <div class="metric-card"><strong class="green">↑ 128.6 KB/s</strong><span>搜索需求流</span></div>
+              <div class="metric-card"><strong class="cyan">↓ 256.3 KB/s</strong><span>内容信号流</span></div>
+            </div>
+            <div class="mini-wave" style="margin-top:12px">
+              <svg viewBox="0 0 160 52" preserveAspectRatio="none">
+                <polyline fill="none" stroke="#3df0ae" stroke-width="2" points="0,38 10,22 20,26 30,36 40,34 50,20 60,16 70,30 80,36 90,28 100,18 110,32 120,34 130,12 140,18 160,28"/>
+              </svg>
+            </div>
+          </section>
+
+          <section class="panel identity-box">
+            <div class="avatar">A</div>
+            <div class="identity-copy">
+              <strong>Admin</strong>
+              <span>超级策略员</span>
+            </div>
+          </section>
+        </div>
+      </aside>
+
+      <main class="main">
+        <section class="panel overview">
+          <div class="panel-title"><span>设备概览</span></div>
+          <div class="metric-row">
+            <div class="overview-card"><strong class="blue">18</strong><span>总信号数</span><small>◫</small></div>
+            <div class="overview-card"><strong class="green">12</strong><span>有效机会</span><small>◉</small></div>
+            <div class="overview-card"><strong class="red">4</strong><span>高竞争赛道</span><small>⊗</small></div>
+            <div class="overview-card"><strong class="yellow">2</strong><span>警告信号</span><small>⚠</small></div>
+            <div class="overview-card"><strong class="orange">128</strong><span>今日消息量</span><small>◔</small></div>
+          </div>
+        </section>
+
+        <section class="panel topology">
+          <div class="topology-head">
+            <div class="panel-title" style="margin:0"><span>网络拓扑</span></div>
+            <div class="head-tools">
+              <div class="head-tool">⤢</div>
+              <div class="head-tool">⇄</div>
+              <div class="head-tool">＋</div>
+              <div class="head-tool">－</div>
+            </div>
+          </div>
+          <div class="topology-stage">
+            <div class="connector" style="width:136px; left:50%; top:50%; transform:translate(12px,-120px) rotate(-27deg);"></div>
+            <div class="connector" style="width:138px; left:50%; top:50%; transform:translate(12px,-34px) rotate(0deg);"></div>
+            <div class="connector" style="width:142px; left:50%; top:50%; transform:translate(-154px,-74px) rotate(180deg);"></div>
+            <div class="connector" style="width:136px; left:50%; top:50%; transform:translate(-154px,14px) rotate(180deg);"></div>
+            <div class="connector" style="width:118px; left:50%; top:50%; transform:translate(-26px,72px) rotate(90deg);"></div>
+
+            <div class="node-card green" style="top:34px; left:56px;">
+              <h4>女性健身补剂</h4>
+              <p>百度搜索量同比 +90%<br>需求爆发正在形成</p>
+              <small>Search Signal</small>
+            </div>
+
+            <div class="node-card yellow" style="top:38px; right:48px;">
+              <h4>EAFIT 黑燃片</h4>
+              <p>小红书年销 6400 万+<br>证明女性健康管理可成交</p>
+              <small>Validation Node</small>
+            </div>
+
+            <div class="node-card purple" style="top:182px; left:22px;">
+              <h4>VIFIT 小燃条蛋白粉</h4>
+              <p>单篇互动 9.2 万+<br>女性专属表达开始成立</p>
+              <small>MQTT / Brand Entry</small>
+            </div>
+
+            <div class="node-card blue" style="top:188px; right:12px;">
+              <h4>经期运动营养</h4>
+              <p>内容供给稀缺<br>AQI: 42 优</p>
+              <small>HTTP / Content Gap</small>
+            </div>
+
+            <div class="node-card orange" style="top:316px; left:106px;">
+              <h4>肌酸软糖</h4>
+              <p>搜索同比暴涨 1300%<br>零食化补剂窗口开启</p>
+              <small>Serial / Trend Spike</small>
+            </div>
+
+            <div class="node-card green" style="top:320px; right:98px;">
+              <h4>女生蛋白粉避坑</h4>
+              <p>乳糖不耐 / 腥味 / 智商税<br>高共鸣痛点集合</p>
+              <small>CAN / Pain Cluster</small>
+            </div>
+
+            <div class="center-core">
+              <div class="core-cube">◫</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel charts">
+          <div class="panel-title"><span>数据监控</span></div>
+          <div class="chart-grid">
+            <div class="chart-card">
+              <div class="chart-top"><strong>搜索热度</strong><span>实时</span></div>
+              <div class="chart-value blue">5.8亿阅读</div>
+              <div class="chart-svg">
+                <svg viewBox="0 0 220 110" preserveAspectRatio="none">
+                  <defs><linearGradient id="cg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(43,184,255,.45)"/><stop offset="100%" stop-color="rgba(43,184,255,0)"/></linearGradient></defs>
+                  <polygon fill="url(#cg1)" points="0,88 20,80 40,76 60,68 80,54 100,58 120,40 140,36 160,44 180,28 200,18 220,14 220,110 0,110"/>
+                  <polyline fill="none" stroke="#2bb8ff" stroke-width="3" points="0,88 20,80 40,76 60,68 80,54 100,58 120,40 140,36 160,44 180,28 200,18 220,14"/>
+                </svg>
+              </div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-top"><strong>内容密度</strong><span>实时</span></div>
+              <div class="chart-value green">42%</div>
+              <div class="chart-svg">
+                <svg viewBox="0 0 220 110" preserveAspectRatio="none">
+                  <defs><linearGradient id="cg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(61,240,174,.45)"/><stop offset="100%" stop-color="rgba(61,240,174,0)"/></linearGradient></defs>
+                  <polygon fill="url(#cg2)" points="0,84 20,74 40,78 60,68 80,56 100,62 120,46 140,50 160,38 180,44 200,28 220,20 220,110 0,110"/>
+                  <polyline fill="none" stroke="#3df0ae" stroke-width="3" points="0,84 20,74 40,78 60,68 80,56 100,62 120,46 140,50 160,38 180,44 200,28 220,20"/>
+                </svg>
+              </div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-top"><strong>情绪强度</strong><span>实时</span></div>
+              <div class="chart-value pink">320 讨论峰值</div>
+              <div class="chart-svg">
+                <svg viewBox="0 0 220 110" preserveAspectRatio="none">
+                  <defs><linearGradient id="cg3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(192,92,255,.45)"/><stop offset="100%" stop-color="rgba(192,92,255,0)"/></linearGradient></defs>
+                  <polygon fill="url(#cg3)" points="0,90 20,82 40,76 60,58 80,62 100,50 120,62 140,46 160,40 180,52 200,26 220,18 220,110 0,110"/>
+                  <polyline fill="none" stroke="#c05cff" stroke-width="3" points="0,90 20,82 40,76 60,58 80,62 100,50 120,62 140,46 160,40 180,52 200,26 220,18"/>
+                </svg>
+              </div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-top"><strong>内容转速</strong><span>实时</span></div>
+              <div class="chart-value orange">1520 RPM</div>
+              <div class="chart-svg">
+                <svg viewBox="0 0 220 110" preserveAspectRatio="none">
+                  <defs><linearGradient id="cg4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(255,141,60,.45)"/><stop offset="100%" stop-color="rgba(255,141,60,0)"/></linearGradient></defs>
+                  <polygon fill="url(#cg4)" points="0,92 20,86 40,82 60,74 80,64 100,66 120,58 140,48 160,56 180,40 200,26 220,30 220,110 0,110"/>
+                  <polyline fill="none" stroke="#ff8d3c" stroke-width="3" points="0,92 20,86 40,82 60,74 80,64 100,66 120,58 140,48 160,56 180,40 200,26 220,30"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel console">
+          <div class="console-tabs">
+            <span class="active">数据透传</span>
+            <span>命令模板</span>
+            <span>设备配置</span>
+            <span>协议解析</span>
+          </div>
+          <div class="console-body">
+            <div class="console-form">
+              <div class="form-row">
+                <div class="select-box">连接：内容引擎</div>
+                <div class="select-box">波特率：112500</div>
+                <div class="select-box">校验位：None</div>
+                <div class="select-box">模式：Trend</div>
+                <div class="action-button" style="background:rgba(255,85,119,.18);color:#ff8ba1;border-color:rgba(255,85,119,.18)">断开</div>
+              </div>
+              <div class="panel-title" style="font-size:14px;margin:0 0 10px 0"><span>发送策略指令</span></div>
+              <div class="command-box">
+                <span>A5 01 02 00 10 5A</span>
+                <span style="color:var(--muted)">×</span>
+              </div>
+              <div class="send-row">
+                <div class="send-actions">
+                  <span>□ 自动发送</span>
+                  <span>□ 循环发送</span>
+                  <span>间隔 1000 ms</span>
+                </div>
+                <div class="send-btn">✈ 发送</div>
+              </div>
+            </div>
+            <div class="console-feed">
+              <div class="feed-toolbar">
+                <div class="feed-chip active">HEX</div>
+                <div class="feed-chip">ASCII</div>
+                <div class="feed-chip">JSON</div>
+              </div>
+              <div class="data-rain">
+                <div class="cyan">A5 01 02 10 00 02 03 04 05 06 07 08 09 0A ...</div>
+                <div class="green">A5 02 23 10 00 02 02 04 06 06 08 09 09 09 ...</div>
+                <div class="yellow">A5 01 03 10 00 09 85 09 88 02 05 05 06 04 ...</div>
+                <div class="pink">A5 06 19 00 03 08 00 06 18 08 10 12 14 19 ...</div>
+                <div class="orange">A5 08 31 20 00 07 21 04 08 08 12 12 16 18 ...</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <aside class="sidebar-right">
+        <section class="panel">
+          <div class="panel-body">
+            <div class="panel-title"><span>快捷操作</span></div>
+            <div class="action-grid">
+              <div class="quick-item"><div class="quick-icon blue">✦</div><span>添加赛道</span></div>
+              <div class="quick-item"><div class="quick-icon green">⊕</div><span>扫描信号</span></div>
+              <div class="quick-item"><div class="quick-icon yellow">➤</div><span>数据发送</span></div>
+              <div class="quick-item"><div class="quick-icon cyan">↗</div><span>内容升级</span></div>
+              <div class="quick-item"><div class="quick-icon pink">＋</div><span>脚本执行</span></div>
+              <div class="quick-item"><div class="quick-icon red">⊘</div><span>导入配置</span></div>
+              <div class="quick-item"><div class="quick-icon blue">⌲</div><span>导出数据</span></div>
+              <div class="quick-item"><div class="quick-icon pink">⟗</div><span>协议测试</span></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-body">
+            <div class="panel-title"><span>消息日志</span><span class="blue" style="font-size:13px">清空</span></div>
+            <div class="log-list">
+              <div class="log-row"><time>15:30:45</time><div class="tag cyan">[MQTT]</div><div>VIFIT 女性专属表达信号上线</div></div>
+              <div class="log-row"><time>15:30:44</time><div class="tag green">[TCP]</div><div>女性健身补剂搜索增长验证成功</div></div>
+              <div class="log-row"><time>15:30:43</time><div class="tag yellow">[Serial]</div><div>经期运动营养空白节点打开</div></div>
+              <div class="log-row"><time>15:30:42</time><div class="tag red">[HTTP]</div><div>EAFIT 年销验证返回 200 OK</div></div>
+              <div class="log-row"><time>15:30:41</time><div class="tag pink">[CAN]</div><div>女生蛋白粉避坑痛点聚类完成</div></div>
+              <div class="log-row"><time>15:30:40</time><div class="tag green">[BLE]</div><div>肌酸软糖趋势峰值连接成功</div></div>
+              <div class="log-row"><time>15:30:39</time><div class="tag yellow">[Modbus]</div><div>用户情绪寄存器读取成功</div></div>
+              <div class="log-row"><time>15:30:38</time><div class="tag cyan">[UDP]</div><div>接收内容流 192.168.1.105:8080</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-body">
+            <div class="panel-title"><span>自动化脚本</span><span class="blue" style="font-size:13px">＋ 新建脚本</span></div>
+            <div class="automation-list">
+              <div class="automation-item">
+                <div class="automation-icon pink">⌁</div>
+                <div class="automation-copy">
+                  <strong>温度过高自动风扇</strong>
+                  <span>当趋势 > 90°C 时执行</span>
+                </div>
+                <div class="toggle on"></div>
+              </div>
+              <div class="automation-item">
+                <div class="automation-icon orange">◎</div>
+                <div class="automation-copy">
+                  <strong>人体检测开灯</strong>
+                  <span>当女性需求进入时执行</span>
+                </div>
+                <div class="toggle on"></div>
+              </div>
+              <div class="automation-item">
+                <div class="automation-icon blue">◷</div>
+                <div class="automation-copy">
+                  <strong>定时设备重启</strong>
+                  <span>每天 03:00 执行</span>
+                </div>
+                <div class="toggle"></div>
+              </div>
+              <div class="automation-item">
+                <div class="automation-icon red">⚡</div>
+                <div class="automation-copy">
+                  <strong>电量低告警</strong>
+                  <span>当窗口 < 20% 时执行</span>
+                </div>
+                <div class="toggle on"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="footer-strip">
+          <span>◔</span>
+          <span>12:30:45</span>
+          <span>共 128 bytes</span>
+        </div>
+      </aside>
+    </div>
+  </div>
+</body>
+</html>
