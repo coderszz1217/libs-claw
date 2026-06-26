@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 小红薯电商增长官</title>
+  <meta name="description" content="AI 小红薯电商增长官，帮助品牌在小红书发现浅蓝海场景、提炼用户痛点、生成种草内容、搭建关键词资产。">
+  <style>
+    :root {
+      --paper: #f7f0e7;
+      --paper-2: #fffaf3;
+      --ink: #171414;
+      --ink-soft: #554a42;
+      --ink-muted: #877a6e;
+      --rose: #8b2f46;
+      --rose-soft: #b15b6f;
+      --yam: #c7823a;
+      --yam-soft: #e8c69c;
+      --leaf: #2f6654;
+      --line: rgba(23, 20, 20, 0.08);
+      --card: rgba(255, 255, 255, 0.68);
+      --shadow: 0 24px 80px rgba(80, 49, 24, 0.11);
+      --radius: 28px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(199, 130, 58, 0.16), transparent 32%),
+        radial-gradient(circle at 84% 18%, rgba(139, 47, 70, 0.10), transparent 26%),
+        linear-gradient(180deg, #fffcf7 0%, var(--paper) 52%, #f1e7dc 100%);
+      line-height: 1.78;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(23, 20, 20, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23, 20, 20, 0.025) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,0.48), transparent 85%);
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(1180px, calc(100vw - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(16px);
+      background: rgba(255, 250, 243, 0.84);
+      border-bottom: 1px solid rgba(23, 20, 20, 0.06);
+    }
+
+    .topbar-inner {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      color: #fff8ef;
+      font-size: 1.28rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--rose), var(--yam));
+      box-shadow: 0 16px 30px rgba(139, 47, 70, 0.22);
+    }
+
+    .brand-copy strong {
+      display: block;
+      font-family: Georgia, "Songti SC", serif;
+      font-size: 1.05rem;
+      letter-spacing: 0.04em;
+    }
+
+    .brand-copy span {
+      display: block;
+      color: var(--ink-muted);
+      font-size: 0.76rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 18px;
+      color: var(--ink-soft);
+      font-size: 0.92rem;
+    }
+
+    .nav a:hover { color: var(--rose); }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 110px 0 70px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+      gap: 34px;
+      align-items: stretch;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: var(--yam);
+      font-size: 0.78rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3 {
+      font-family: Georgia, "Songti SC", "STSong", serif;
+      font-weight: 700;
+      text-wrap: pretty;
+    }
+
+    .hero h1 {
+      max-width: 10.8em;
+      font-size: clamp(2.85rem, 5.8vw, 5.15rem);
+      line-height: 1.12;
+      letter-spacing: 0.02em;
+    }
+
+    .hero h1 em {
+      color: var(--rose);
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    .hero-lead {
+      margin-top: 22px;
+      max-width: 39rem;
+      color: var(--ink-soft);
+      font-size: 1.08rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 32px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 54px;
+      padding: 0 24px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 0.96rem;
+      font-weight: 700;
+      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      color: #fff8ef;
+      background: linear-gradient(135deg, var(--rose), #a54d62 46%, var(--yam));
+      box-shadow: 0 18px 40px rgba(139, 47, 70, 0.22);
+    }
+
+    .btn-secondary {
+      color: var(--ink);
+      border-color: rgba(23, 20, 20, 0.10);
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .hero-note {
+      margin-top: 18px;
+      color: var(--ink-muted);
+      font-size: 0.92rem;
+    }
+
+    .hero-panel,
+    .card,
+    .panel {
+      border: 1px solid rgba(23, 20, 20, 0.08);
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+    }
+
+    .hero-panel {
+      position: relative;
+      overflow: hidden;
+      padding: 28px;
+    }
+
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(199, 130, 58, 0.18), transparent 32%),
+        radial-gradient(circle at 100% 100%, rgba(139, 47, 70, 0.12), transparent 30%);
+      pointer-events: none;
+    }
+
+    .panel-label {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--yam);
+      font-size: 0.78rem;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+    }
+
+    .panel-label::before {
+      content: "";
+      width: 28px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    .director-card {
+      position: relative;
+      z-index: 1;
+      margin-top: 20px;
+      padding: 22px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(23, 20, 20, 0.06);
+    }
+
+    .director-card h3 {
+      font-size: 1.55rem;
+      line-height: 1.35;
+    }
+
+    .director-card p {
+      margin-top: 12px;
+      color: var(--ink-soft);
+      font-size: 0.96rem;
+    }
+
+    .phone-board {
+      position: relative;
+      z-index: 1;
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 24px;
+      background: rgba(255, 250, 243, 0.86);
+      border: 1px solid rgba(23, 20, 20, 0.06);
+    }
+
+    .phone-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--ink-muted);
+      font-size: 0.8rem;
+    }
+
+    .search-pill {
+      margin-top: 14px;
+      padding: 13px 16px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid rgba(23, 20, 20, 0.06);
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+    }
+
+    .note-stack {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .note-card {
+      padding: 14px;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid rgba(23, 20, 20, 0.06);
+    }
+
+    .note-card strong {
+      display: block;
+      color: var(--rose);
+      line-height: 1.4;
+    }
+
+    .note-card span {
+      display: block;
+      margin-top: 5px;
+      color: var(--ink-soft);
+      font-size: 0.84rem;
+      line-height: 1.55;
+    }
+
+    .signal-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .signal {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(249, 245, 238, 0.95);
+      border: 1px solid rgba(23, 20, 20, 0.05);
+    }
+
+    .signal strong {
+      display: block;
+      color: var(--rose);
+      font-family: Georgia, serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+    }
+
+    .signal span {
+      display: block;
+      margin-top: 6px;
+      color: var(--ink-soft);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    section { padding: 82px 0; }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+      margin-bottom: 38px;
+    }
+
+    .section-no {
+      color: rgba(199, 130, 58, 0.42);
+      font-family: Georgia, serif;
+      font-size: clamp(3.3rem, 7vw, 6rem);
+      line-height: 1;
+    }
+
+    .section-head h2 {
+      margin-bottom: 12px;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.24;
+    }
+
+    .section-head p {
+      max-width: 760px;
+      color: var(--ink-soft);
+      font-size: 1.02rem;
+    }
+
+    .pain-grid,
+    .scene-grid,
+    .deploy-grid,
+    .tech-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .pain-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .card { padding: 28px; }
+
+    .card h3,
+    .panel h3 {
+      margin-bottom: 12px;
+      font-size: 1.45rem;
+      line-height: 1.35;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      margin-bottom: 14px;
+      padding: 0 12px;
+      border-radius: 999px;
+      color: var(--rose);
+      background: rgba(139, 47, 70, 0.08);
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+    }
+
+    .card p,
+    .panel p,
+    .list li,
+    .table td,
+    .table th {
+      color: var(--ink-soft);
+    }
+
+    .quote {
+      margin-top: 18px;
+      padding-left: 16px;
+      border-left: 2px solid var(--yam);
+      color: var(--ink);
+      font-family: Georgia, "Songti SC", serif;
+      font-size: 1.02rem;
+    }
+
+    .now-next {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .mini-box {
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.55);
+      border: 1px solid rgba(23,20,20,0.06);
+    }
+
+    .mini-box strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--ink);
+      font-size: 0.98rem;
+    }
+
+    .equation {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 72px minmax(0, 1fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .equation-center {
+      display: grid;
+      place-items: center;
+      color: var(--yam);
+      font-family: Georgia, serif;
+      font-size: 2.8rem;
+      font-weight: 500;
+    }
+
+    .comparison {
+      margin-top: 26px;
+      overflow: auto;
+      border-radius: 24px;
+      border: 1px solid rgba(23, 20, 20, 0.08);
+      background: rgba(255,255,255,0.55);
+    }
+
+    .table {
+      width: 100%;
+      min-width: 720px;
+      border-collapse: collapse;
+    }
+
+    .table th,
+    .table td {
+      padding: 18px 20px;
+      border-bottom: 1px solid rgba(23, 20, 20, 0.07);
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.94rem;
+      line-height: 1.7;
+    }
+
+    .table th {
+      color: var(--ink);
+      background: rgba(199, 130, 58, 0.08);
+      font-weight: 700;
+    }
+
+    .delta {
+      color: var(--leaf);
+      font-weight: 700;
+    }
+
+    .layers {
+      display: grid;
+      gap: 16px;
+    }
+
+    .layer {
+      display: grid;
+      grid-template-columns: 160px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+      padding: 24px 26px;
+    }
+
+    .layer-index {
+      color: var(--yam);
+      font-family: Georgia, serif;
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .layer h3 { margin-bottom: 6px; }
+
+    .list {
+      margin-top: 14px;
+      padding-left: 18px;
+    }
+
+    .list li { margin: 8px 0; }
+
+    .scene-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .deploy-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tech-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .metric {
+      padding: 22px;
+      text-align: center;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.54);
+      border: 1px solid rgba(23,20,20,0.07);
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--rose);
+      font-family: Georgia, serif;
+      font-size: 2rem;
+      font-weight: 600;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 6px;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+    }
+
+    .faq {
+      display: grid;
+      gap: 14px;
+    }
+
+    details {
+      padding: 20px 22px;
+      border-radius: 22px;
+      border: 1px solid rgba(23,20,20,0.08);
+      background: rgba(255,255,255,0.56);
+    }
+
+    summary {
+      color: var(--ink);
+      cursor: pointer;
+      list-style: none;
+      font-weight: 700;
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    details p {
+      margin-top: 12px;
+      color: var(--ink-soft);
+    }
+
+    .cta { padding: 90px 0 100px; }
+
+    .cta-shell {
+      padding: 42px;
+      background:
+        radial-gradient(circle at top left, rgba(199, 130, 58, 0.22), transparent 28%),
+        radial-gradient(circle at 90% 20%, rgba(139, 47, 70, 0.18), transparent 24%),
+        linear-gradient(135deg, rgba(255,255,255,0.72), rgba(248,241,232,0.84));
+    }
+
+    .checklist {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 18px;
+      margin: 24px 0 28px;
+    }
+
+    .check {
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.62);
+      border: 1px solid rgba(23,20,20,0.06);
+      color: var(--ink-soft);
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .step {
+      padding: 20px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.54);
+      border: 1px solid rgba(23,20,20,0.07);
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--rose);
+    }
+
+    footer {
+      padding: 28px 0 46px;
+      color: var(--ink-muted);
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 1080px) {
+      .hero-grid,
+      .pain-grid,
+      .scene-grid,
+      .deploy-grid,
+      .tech-grid,
+      .metric-strip,
+      .steps,
+      .equation {
+        grid-template-columns: 1fr;
+      }
+
+      .equation-center { min-height: 44px; }
+      .layer,
+      .section-head { grid-template-columns: 1fr; }
+      .checklist,
+      .now-next { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .topbar-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px 0;
+      }
+
+      .nav {
+        gap: 12px;
+        font-size: 0.88rem;
+      }
+
+      .hero { padding-top: 72px; }
+      .hero-panel,
+      .card,
+      .panel,
+      .cta-shell { padding: 22px; }
+      .container { width: min(100vw - 20px, 1180px); }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="#top" aria-label="返回顶部">
+        <div class="brand-mark">薯</div>
+        <div class="brand-copy">
+          <strong>AI 小红薯</strong>
+          <span>Xiaohongshu Commerce Director</span>
+        </div>
+      </a>
+      <nav class="nav" aria-label="页面导航">
+        <a href="#pain">伤口</a>
+        <a href="#equation">方法</a>
+        <a href="#system">四层闭环</a>
+        <a href="#scenes">内容场景</a>
+        <a href="#deploy">交付资产</a>
+        <a href="#cta">启动</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">AI For Xiaohongshu Commerce</span>
+          <h1>你不是缺爆款。<br>你是缺一个 <em>7×24</em> 小时在线的<br>小红书增长官。</h1>
+          <p class="hero-lead">
+            AI 小红薯不只是帮你写几篇种草文案，而是持续扫描小红书搜索、评论、竞品和内容缺口，把“收纳盒红海”拆成可执行的浅蓝海机会：场景、痛点、标题、脚本、卖点和关键词资产。
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#cta">确认品类，开始建档</a>
+            <a class="btn btn-secondary" href="#system">先看四层闭环</a>
+          </div>
+          <p class="hero-note">适合收纳家居、日百百货、白牌电商、内容团队、私域卖货和小红书店铺。</p>
+        </div>
+
+        <aside class="hero-panel">
+          <span class="panel-label">Live Xiaohongshu Desk</span>
+          <div class="director-card">
+            <h3>从“灵感来了再发”到“按机会窗口排产”</h3>
+            <p>把用户抱怨、评论高频词、竞品内容、产品卖点和脚本模板连成一张增长桌面，每天都知道下一篇该写什么、为什么写、写给谁看。</p>
+          </div>
+
+          <div class="phone-board" aria-label="小红书内容雷达示意">
+            <div class="phone-top">
+              <span>关键词雷达</span>
+              <span>今日建议：3 个窗口词</span>
+            </div>
+            <div class="search-pill">防尘收纳盒 / 厨房收纳盒 / 女大宿舍收纳</div>
+            <div class="note-stack">
+              <div class="note-card">
+                <strong>买了5个全踩雷，终于搞懂尺寸</strong>
+                <span>钩子：痛点复盘 + 尺寸规则 + 高收藏率</span>
+              </div>
+              <div class="note-card">
+                <strong>南方租房党听劝，回南天别买开放式</strong>
+                <span>钩子：地域共鸣 + 防尘防潮 + 强转化</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="signal-grid">
+            <div class="signal">
+              <strong>6-12 月</strong>
+              <span>场景痛点窗口仍在，先占内容心智。</span>
+            </div>
+            <div class="signal">
+              <strong>20/20</strong>
+              <span>高赞笔记账号分散，新玩家仍能入场。</span>
+            </div>
+            <div class="signal">
+              <strong>10 篇</strong>
+              <span>先建差异化内容矩阵，覆盖 3 个以上场景。</span>
+            </div>
+            <div class="signal">
+              <strong>48h</strong>
+              <span>先做尺寸适配表，快速发布第一篇。</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="pain">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-no">01</div>
+          <div>
+            <h2>三个正在拖慢小红书电商的伤口</h2>
+            <p>收纳盒大盘很红，但用户不是在找“盒子”，是在找“刚好解决我这个问题”的答案。机会不在品类名里，在场景痛点和内容切口里。</p>
+          </div>
+        </div>
+
+        <div class="pain-grid">
+          <article class="card">
+            <span class="tag">伤口一</span>
+            <h3>你在卖品类，用户在找场景答案</h3>
+            <p>“收纳盒”已经拥挤，但“防尘防潮”“厨房吊柜”“宿舍开学”“抽屉尺寸适配”仍有内容空白。品类词很大，场景词才更容易转化。</p>
+            <div class="now-next">
+              <div class="mini-box">
+                <strong>现在</strong>
+                <p>用通用卖点讲产品，看起来像所有收纳品牌。</p>
+              </div>
+              <div class="mini-box">
+                <strong>应该</strong>
+                <p>按场景痛点组织内容，让用户觉得“这就是我”。</p>
+              </div>
+            </div>
+            <p class="quote">用户不是没有需求，只是她不会用你的品类词表达。</p>
+          </article>
+
+          <article class="card">
+            <span class="tag">伤口二</span>
+            <h3>内容凭感觉排产，爆款无法复用</h3>
+            <p>今天写避坑，明天写安利，后天写测评，但没有关键词建档、钩子分型和场景矩阵。偶然爆一篇之后，很难把逻辑复制到下一篇。</p>
+            <div class="now-next">
+              <div class="mini-box">
+                <strong>现在</strong>
+                <p>靠灵感和热点发内容，团队讨论成本很高。</p>
+              </div>
+              <div class="mini-box">
+                <strong>应该</strong>
+                <p>把选题、脚本、封面、标签和评论引导模板化。</p>
+              </div>
+            </div>
+            <p class="quote">内容资产不是一篇笔记，是一套可重复生产的判断系统。</p>
+          </article>
+
+          <article class="card">
+            <span class="tag">伤口三</span>
+            <h3>价格战太近，信任建立太慢</h3>
+            <p>评论区大量“好贵”“求链接”“蹲店铺”，一旦不能解释为什么值得多花一点，就会被 9.9 元包邮拖进内卷。</p>
+            <div class="now-next">
+              <div class="mini-box">
+                <strong>现在</strong>
+                <p>用便宜、好看、容量大做卖点，很快被替代。</p>
+              </div>
+              <div class="mini-box">
+                <strong>应该</strong>
+                <p>用尺寸不踩雷、防尘防潮、抽拉不移位建立信任。</p>
+              </div>
+            </div>
+            <p class="quote">真正的差异化，是让用户相信“我不会再买错”。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="equation">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-no">02</div>
+          <div>
+            <h2>从“发笔记”变成“经营机会窗口”</h2>
+            <p>AI 小红薯把调研、选题、脚本、卖点和关键词放在一条链路里，不让内容团队每次从白纸开始。</p>
+          </div>
+        </div>
+
+        <div class="equation">
+          <article class="card">
+            <span class="tag">以前</span>
+            <h3>内容团队靠经验下注</h3>
+            <ul class="list">
+              <li>选题看竞品近期爆了什么。</li>
+              <li>标题靠临场发挥，钩子不可复用。</li>
+              <li>产品卖点停留在“好看、便宜、能装”。</li>
+              <li>标签随手填，关键词资产沉淀不足。</li>
+            </ul>
+          </article>
+          <div class="equation-center">→</div>
+          <article class="card">
+            <span class="tag">现在</span>
+            <h3>AI 按场景机会生成内容资产</h3>
+            <ul class="list">
+              <li>先判断品类红海与细分浅蓝海。</li>
+              <li>把用户评论转成痛点、标题和脚本。</li>
+              <li>按功能、情绪、社会认同提炼卖点。</li>
+              <li>沉淀核心词、长尾词、场景词和人群词。</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="comparison">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>模块</th>
+                <th>过去的做法</th>
+                <th>AI 小红薯的做法</th>
+                <th>结果</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>平台调研</td>
+                <td>人工刷笔记、截图、开会讨论。</td>
+                <td>提取竞争格局、用户痛点、伪机会和窗口期。</td>
+                <td class="delta">从感觉判断变成结构判断</td>
+              </tr>
+              <tr>
+                <td>选题池</td>
+                <td>每周临时想 5-10 个题。</td>
+                <td>按测评、攻略、跨界、教程、避坑、人群共鸣分层生成。</td>
+                <td class="delta">从一次性灵感变成内容库存</td>
+              </tr>
+              <tr>
+                <td>短视频脚本</td>
+                <td>拍摄前才拆镜头。</td>
+                <td>按“痛点共鸣、反常识、场景空白”生成 12-14 秒脚本。</td>
+                <td class="delta">从想法变成可拍素材</td>
+              </tr>
+              <tr>
+                <td>关键词建档</td>
+                <td>发完就散，后续难复盘。</td>
+                <td>核心词、长尾词、场景词、人群词、竞品词统一管理。</td>
+                <td class="delta">从发内容变成养流量资产</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="system">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-no">03</div>
+          <div>
+            <h2>四层增长闭环</h2>
+            <p>从“看见机会”到“发布内容”，每一层都服务于同一个目标：让用户在小红书搜索和刷到时，都能遇见刚好解决她问题的内容。</p>
+          </div>
+        </div>
+
+        <div class="layers">
+          <article class="panel layer">
+            <div class="layer-index">第一层</div>
+            <div>
+              <h3>平台调研层：找到浅蓝海</h3>
+              <p>识别品类是否红海、竞争是否垄断、评论里用户真正抱怨什么。</p>
+              <ul class="list">
+                <li>判断：收纳盒大盘红海，但“场景痛点 + 解决方案”仍是浅蓝海。</li>
+                <li>竞争：Top 高赞账号分散，新玩家仍有内容占位空间。</li>
+                <li>避开：奶油风梳妆台、泛极简收纳等审美疲劳切口。</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="panel layer">
+            <div class="layer-index">第二层</div>
+            <div>
+              <h3>内容工厂层：把机会变成题</h3>
+              <p>把“用户痛点”翻译成可以直接发布的选题、标题、封面文案和评论引导。</p>
+              <ul class="list">
+                <li>尺寸焦虑：“买了5个收纳盒全踩雷，终于搞懂这3个尺寸”。</li>
+                <li>地域共鸣：“南方租房党听劝，防尘防潮我替你试过了”。</li>
+                <li>场景空白：“厨房吊柜收纳2.0，从混乱到能装3倍”。</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="panel layer">
+            <div class="layer-index">第三层</div>
+            <div>
+              <h3>卖点提炼层：给价格一个理由</h3>
+              <p>把产品功能变成小红书能理解的生活场景，而不是只列参数。</p>
+              <ul class="list">
+                <li>防尘防潮：回南天杂物不发霉，南方租房党不用天天擦。</li>
+                <li>精确尺寸适配：量内径选尺寸，抽屉能顺滑开合。</li>
+                <li>抽拉不移位：底部防滑，拿东西时盒子不跟着跑。</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="panel layer">
+            <div class="layer-index">第四层</div>
+            <div>
+              <h3>关键词资产层：让内容持续被找到</h3>
+              <p>不仅追一篇爆款，还要让搜索流量能在之后持续进入店铺和私域。</p>
+              <ul class="list">
+                <li>核心词：收纳、整理、桌面、抽屉。</li>
+                <li>长尾词：防尘收纳盒、厨房收纳盒、化妆品收纳盒。</li>
+                <li>人群词：租房党、宿舍党、小户型、南方回南天。</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="scenes">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-no">04</div>
+          <div>
+            <h2>六个直接可用的内容场景</h2>
+            <p>每个场景都可以继续拆成图文笔记、短视频脚本、朋友圈文案和详情页卖点。</p>
+          </div>
+        </div>
+
+        <div class="scene-grid">
+          <article class="card">
+            <span class="tag">测评型</span>
+            <h3>南方租房党防潮实测</h3>
+            <p>用“回南天”“梅雨季”“纸巾都能拧出水”的场景，让防尘防潮从功能参数变成真实痛点。</p>
+          </article>
+          <article class="card">
+            <span class="tag">攻略型</span>
+            <h3>宜家抽屉适配清单</h3>
+            <p>把尺寸焦虑变成收藏理由，精确到毫米，解决“买回来塞不进去”的高频踩雷。</p>
+          </article>
+          <article class="card">
+            <span class="tag">反常识</span>
+            <h3>药箱才是化妆品收纳</h3>
+            <p>用跨界思路激发好奇心，再用价格差和收纳效果制造评论讨论。</p>
+          </article>
+          <article class="card">
+            <span class="tag">教程型</span>
+            <h3>厨房吊柜千万别直接堆</h3>
+            <p>强场景痛点“拿一个倒一片”，解决方案简单可复制，适合短视频快节奏切镜。</p>
+          </article>
+          <article class="card">
+            <span class="tag">避坑型</span>
+            <h3>这 6 种收纳盒我替你踩过雷</h3>
+            <p>以“替代清单”承接购买决策，天然适合置顶评论放尺寸表和产品链接。</p>
+          </article>
+          <article class="card">
+            <span class="tag">人群型</span>
+            <h3>男生桌面也可以很清爽</h3>
+            <p>男性办公桌面场景相对空白，适合用“低维护、清爽、不花哨”的差异化语言切入。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="tech">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-no">05</div>
+          <div>
+            <h2>它能持续生成什么</h2>
+            <p>AI 小红薯的价值不是一份报告，而是一套持续更新的内容生产资料。</p>
+          </div>
+        </div>
+
+        <div class="tech-grid">
+          <article class="card">
+            <h3>平台机会卡</h3>
+            <p>一句话判断、窗口期、竞争分散度、伪机会提醒。</p>
+          </article>
+          <article class="card">
+            <h3>爆款选题池</h3>
+            <p>按推荐度排序，标注测评、攻略、避坑、教程、人群共鸣类型。</p>
+          </article>
+          <article class="card">
+            <h3>短视频脚本</h3>
+            <p>12-14 秒节奏，包含钩子、镜头、字幕和爆款逻辑。</p>
+          </article>
+          <article class="card">
+            <h3>小红书商品笔记</h3>
+            <p>标题、封面信息、正文、标签、评论区引导一体生成。</p>
+          </article>
+          <article class="card">
+            <h3>朋友圈文案</h3>
+            <p>踩坑吐槽、实用安利、生活小确幸三种口吻快速适配。</p>
+          </article>
+          <article class="card">
+            <h3>卖点矩阵</h3>
+            <p>功能卖点、情感卖点、社会认同卖点，全部转成场景化表达。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="deploy">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-no">06</div>
+          <div>
+            <h2>两种交付方式</h2>
+            <p>可以先用轻量工作台跑起来，也可以接入团队现有的内容排期、素材库和店铺商品信息。</p>
+          </div>
+        </div>
+
+        <div class="deploy-grid">
+          <article class="card">
+            <span class="tag">轻量版</span>
+            <h3>单品类增长包</h3>
+            <ul class="list">
+              <li>输入一个品类和产品卖点。</li>
+              <li>输出平台调研、选题池、脚本、商品笔记、关键词表。</li>
+              <li>适合白牌商家、个人店铺、小团队试跑。</li>
+            </ul>
+          </article>
+          <article class="card">
+            <span class="tag">团队版</span>
+            <h3>小红书内容工作台</h3>
+            <ul class="list">
+              <li>按多品类、多产品线持续建档。</li>
+              <li>沉淀历史爆款、评论反馈、关键词和素材复盘。</li>
+              <li>适合品牌内容团队、代运营、MCN 和电商集团。</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="metric-strip">
+          <div class="metric">
+            <strong>3</strong>
+            <span>优先机会切口</span>
+          </div>
+          <div class="metric">
+            <strong>10</strong>
+            <span>可直接发布选题</span>
+          </div>
+          <div class="metric">
+            <strong>5</strong>
+            <span>关键词资产类别</span>
+          </div>
+          <div class="metric">
+            <strong>1</strong>
+            <span>可执行排产清单</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-no">07</div>
+          <div>
+            <h2>常见问题</h2>
+            <p>如果你已经有产品、有素材、有店铺，但内容增长不稳定，这套系统最容易先跑出价值。</p>
+          </div>
+        </div>
+
+        <div class="faq">
+          <details open>
+            <summary>它会不会只是写得更像小红书？</summary>
+            <p>不是。它先做机会判断，再做内容生成。文案只是最后一步，前面的场景痛点、关键词、竞品空白和卖点矩阵才是核心。</p>
+          </details>
+          <details>
+            <summary>没有真实数据能用吗？</summary>
+            <p>可以先用产品信息和现有观察跑一个假设版，但最好逐步补充真实评论、竞品笔记、店铺转化和商品反馈，系统会越来越准。</p>
+          </details>
+          <details>
+            <summary>适合只有一个 SKU 的商家吗？</summary>
+            <p>适合。一个 SKU 也可以拆出多场景、多痛点、多标题、多脚本，尤其适合用 10 篇内容矩阵验证最能转化的人群。</p>
+          </details>
+          <details>
+            <summary>最先该做哪一步？</summary>
+            <p>先整理产品精确尺寸表和核心卖点，再发布一篇“尺寸避坑 + 场景适配”的笔记，这是收纳类目最容易获得收藏和评论反馈的切口。</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta" id="cta">
+      <div class="container">
+        <div class="panel cta-shell">
+          <span class="eyebrow">Next Step</span>
+          <h2>先用一个品类，跑出第一张小红书增长地图。</h2>
+          <p class="hero-lead" style="margin-top: 16px; max-width: 46rem;">
+            如果你有收纳、家居、日百、个护、小家电或任何适合种草的 SKU，AI 小红薯可以先帮你把“该写什么、怎么写、给谁看、用哪些关键词”整理成一套可执行资产。
+          </p>
+
+          <div class="checklist">
+            <div class="check">品类很卷，但总觉得还有细分机会没抓住</div>
+            <div class="check">内容团队每周都在苦想选题</div>
+            <div class="check">产品卖点讲不出“为什么值得买”</div>
+            <div class="check">小红书发了不少，但关键词和复盘没有沉淀</div>
+            <div class="check">短视频、笔记、朋友圈文案无法互相复用</div>
+            <div class="check">想用 AI，但不想要一堆空泛文案</div>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <strong>01 输入品类</strong>
+              <p>提供产品、价格、核心卖点、目标人群和已有内容。</p>
+            </div>
+            <div class="step">
+              <strong>02 生成地图</strong>
+              <p>输出机会判断、选题池、脚本、笔记、卖点和关键词。</p>
+            </div>
+            <div class="step">
+              <strong>03 小步试跑</strong>
+              <p>先发 3 篇内容，根据评论和收藏反馈继续迭代。</p>
+            </div>
+          </div>
+
+          <div class="hero-actions" style="margin-top: 28px;">
+            <a class="btn btn-primary" href="#top">回到顶部复看方案</a>
+            <a class="btn btn-secondary" href="#system">查看四层闭环</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      AI 小红薯电商增长官 · 以小红书场景痛点、内容资产和关键词建档驱动电商增长
+    </div>
+  </footer>
+</body>
+</html>
